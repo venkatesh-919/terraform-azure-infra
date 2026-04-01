@@ -1,0 +1,17 @@
+dev_rg_name   = "dev-rg"
+keyvault_name = "devkv12345678"
+sku_name      = "Standard"
+sku_name_acr = "standard"
+aks_name      = "dev-aks1"
+dns_prefix    = "devaks1"
+vm_size       = "Standard_D2_v2"
+environment   = "dev"
+acr_name      = "devacr123456"
+vnet_name                 = "dev-vnet"
+address_space             = ["10.0.0.0/16"]
+subnet_name               = "endpoint-subnet"
+address_prefixes          = ["10.0.1.0/24"]
+private_endpoint_name     = "dev-private-endpoint"
+private_service_resource_id = "/subscriptions/7f26904a-dda4-4a02-bd88-67f7b8070968/resourceGroups/dev-rg/providers/Microsoft.KeyVault/vaults/devkv12345678"
+node_count = 1
+subresource_names = ["vault"]
