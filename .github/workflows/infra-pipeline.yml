@@ -37,5 +37,5 @@ jobs:
       - name: Terraform Plan (DEV)
         run: terraform plan -var-file="env/terraform-dev.tfvars"
 
-      - name: Terraform Apply (DEV)
-        run: terraform apply -auto-approve -var-file="env/terraform-dev.tfvars"
+      - name: Terraform destroy (DEV)
+        run: terraform destroy -auto-approve -var-file="env/terraform-dev.tfvars"
