@@ -40,7 +40,9 @@ jobs:
       - name: Terraform destroy (DEV)
         run: terraform destroy -auto-approve -var-file="env/terraform-dev.tfvars"
 
+
   terraform-stage:
+    needs: terraform-dev     # 👈 runs only after dev success
     runs-on: ubuntu-latest
 
     steps:
@@ -67,6 +69,4 @@ jobs:
         run: terraform plan -var-file="env/terraform-stage.tfvars"
 
       - name: Terraform destroy (stage)
-        run: terraform destroy -auto-approve -var-file="env/terraform-stage.tfvars"        
-
-         
+        run: terraform destroy -auto-approve -var-file="env/terraform-stage.tfvars"
