@@ -39,3 +39,34 @@ jobs:
 
       - name: Terraform destroy (DEV)
         run: terraform destroy -auto-approve -var-file="env/terraform-dev.tfvars"
+
+  terraform-stage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan (stage)
+        run: terraform plan -var-file="env/terraform-stage.tfvars"
+
+      - name: Terraform destroy (stage)
+        run: terraform destroy -auto-approve -var-file="env/terraform-stage.tfvars"        
+
+         
