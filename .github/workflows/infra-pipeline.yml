@@ -37,8 +37,8 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan (DEV)
-        run: terraform plan -var-file="env/terraform-dev.tfvars"
+      -  name: Terraform Plan (DEV)
+         run: terraform plan -lock=false -var-file="env/terraform-dev.tfvars"
 
       - name: Terraform Apply (DEV)
         run: terraform apply -auto-approve -var-file="env/terraform-dev.tfvars"
