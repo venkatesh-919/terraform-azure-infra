@@ -1,4 +1,4 @@
-name: Terraform Dev
+name: Terraform Pipeline
 
 on:
   workflow_dispatch:
@@ -10,6 +10,9 @@ permissions:
   id-token: write
   contents: read
 
+#################################
+# DEV
+#################################
 jobs:
   terraform-dev:
     runs-on: ubuntu-latest
@@ -37,12 +40,14 @@ jobs:
       - name: Terraform Plan (DEV)
         run: terraform plan -var-file="env/terraform-dev.tfvars"
 
-      - name: Terraform destroy (DEV)
-        run: terraform destroy -auto-approve -var-file="env/terraform-dev.tfvars"
+      - name: Terraform Apply (DEV)
+        run: terraform apply -auto-approve -var-file="env/terraform-dev.tfvars"
 
-
-  terraform-stage:
-    needs: terraform-dev     # 👈 runs only after dev success
+#################################
+# QA
+#################################
+  terraform-qa:
+    needs: terraform-dev
     runs-on: ubuntu-latest
 
     steps:
@@ -65,8 +70,74 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Plan (stage)
+      - name: Terraform Plan (QA)
+        run: terraform plan -var-file="env/terraform-qa.tfvars"
+
+      - name: Terraform Apply (QA)
+        run: terraform apply -auto-approve -var-file="env/terraform-qa.tfvars"
+
+#################################
+# STAGE
+#################################
+  terraform-stage:
+    needs: terraform-qa
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan (Stage)
         run: terraform plan -var-file="env/terraform-stage.tfvars"
 
-      - name: Terraform destroy (stage)
-        run: terraform destroy -auto-approve -var-file="env/terraform-stage.tfvars"
+      - name: Terraform Apply (Stage)
+        run: terraform apply -auto-approve -var-file="env/terraform-stage.tfvars"
+
+#################################
+# PROD
+#################################
+  terraform-prod:
+    needs: terraform-stage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan (PROD)
+        run: terraform plan -var-file="env/terraform-prod.tfvars"
+
+      - name: Terraform Apply (PROD)
+        run: terraform apply -auto-approve -var-file="env/terraform-prod.tfvars"
