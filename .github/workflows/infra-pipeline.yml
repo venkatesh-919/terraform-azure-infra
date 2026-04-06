@@ -80,7 +80,7 @@ jobs:
 # STAGE
 #################################
   terraform-stage:
-    needs: terraform-qa
+    needs: terraform-QA
     runs-on: ubuntu-latest
 
     steps:
