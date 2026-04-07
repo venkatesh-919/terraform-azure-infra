@@ -6,16 +6,16 @@ module "keyvault" {
   sku_name_acr      = var.sku_name_acr
 }
 
-module "aks" {
-  source = "./modules/aks"
+# module "aks" {
+#   source = "./modules/aks"
 
-  dev_rg_name = var.dev_rg_name
-  aks_name    = var.aks_name
-  dns_prefix  = var.dns_prefix
-  node_count  = var.node_count
-  vm_size     = var.vm_size
-  environment = var.environment
-}
+#   dev_rg_name = var.dev_rg_name
+#   aks_name    = var.aks_name
+#   dns_prefix  = var.dns_prefix
+#   node_count  = var.node_count
+#   vm_size     = var.vm_size
+#   environment = var.environment
+# }
 
 module "acr" {
   source = "./modules/acr"
